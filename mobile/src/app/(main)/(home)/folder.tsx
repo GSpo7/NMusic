@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { BackHandler, Pressable, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -15,13 +15,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import type { FileNode } from "~/db/schema";
-
 import { useFolderContent } from "~/queries/folder";
-import {
-  StickyActionListLayout,
-  useStickyActionListLayoutRef,
-} from "~/layouts/StickyActionScroll";
+import { StickyActionListLayout } from "~/layouts/StickyActionScroll";
 
 import { cn } from "~/lib/style";
 import { ContentPlaceholder } from "~/components/Transition/Placeholder";
@@ -32,13 +27,10 @@ import { SearchResult } from "~/modules/search/components/SearchResult";
 /** Animated scrollview supporting gestures. */
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
-type FolderData = FileNode | Track.Content;
-
 /** Screen for `/folder` route. */
 export default function FolderScreen() {
   const isFocused = useIsFocused();
-  const listRef = useStickyActionListLayoutRef<FolderData>();
-  const [dirSegments, _setDirSegments] = useState<string[]>([]);
+  const [dirSegments, setDirSegments] = useState<string[]>([]);
 
   const fullPath = dirSegments.join("/");
 
@@ -48,17 +40,6 @@ export default function FolderScreen() {
     () => [...(data?.subDirectories ?? []), ...(data?.tracks ?? [])],
     [data],
   );
-
-  /** Modified state setter that scrolls to the top of the page. */
-  const setDirSegments: React.Dispatch<React.SetStateAction<string[]>> =
-    useCallback(
-      (value) => {
-        // Make sure we start at the beginning whenever the directory segments change.
-        listRef.current?.scrollToOffset({ offset: 0 });
-        _setDirSegments(value);
-      },
-      [listRef],
-    );
 
   useEffect(() => {
     // Prevent event from working when this screen isn't focused.
@@ -82,9 +63,8 @@ export default function FolderScreen() {
 
   return (
     <StickyActionListLayout
-      listRef={listRef}
       titleKey="term.folders"
-      estimatedItemSize={56} // 48px Height + 8px Margin Top
+      getEstimatedItemSize={(index) => (index === 0 ? 48 : 56)}
       data={renderedData}
       keyExtractor={(item) => (isTrackContent(item) ? item.id : item.path)}
       renderItem={({ item, index }) =>

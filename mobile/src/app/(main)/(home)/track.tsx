@@ -33,6 +33,7 @@ export default function TrackScreen() {
           <TrackActions showSheet={() => trackSortSheetRef.current?.show()} />
         }
         estimatedActionSize={48}
+        disableScrollTopOnDataChange
         {...presets}
       />
     </>

@@ -13,12 +13,15 @@ export default function ArtistScreen() {
   return (
     <StickyActionListLayout
       titleKey="term.artists"
-      estimatedItemSize={56} // 48px Height + 8px Margin Top
+      getEstimatedItemSize={(index, item) => {
+        if (typeof item === "string") return index === 0 ? 14 : 22;
+        else return 48;
+      }}
       data={data}
       keyExtractor={(item) => (typeof item === "string" ? item : item.name)}
       renderItem={({ item, index }) =>
         typeof item === "string" ? (
-          <Em className={index > 0 ? "mt-4" : undefined}>{item}</Em>
+          <Em className={index > 0 ? "mt-2" : undefined}>{item}</Em>
         ) : (
           <SearchResult
             {...{ as: "ripple", type: "artist", title: item.name }}
@@ -26,7 +29,7 @@ export default function ArtistScreen() {
             onPress={() =>
               router.navigate(`/artist/${encodeURIComponent(item.name)}`)
             }
-            wrapperClassName="mt-2 rounded-full"
+            wrapperClassName="rounded-full"
             className="pr-4"
           />
         )
@@ -37,6 +40,7 @@ export default function ArtistScreen() {
           errMsgKey="err.msg.noArtists"
         />
       }
+      columnWrapperStyle={{ rowGap: 8 }}
     />
   );
 }
