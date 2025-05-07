@@ -9,7 +9,7 @@ import { LANGUAGES } from "~/modules/i18n/constants";
 import { useExportBackup, useImportBackup } from "./helpers/BackupData";
 
 import { mutateGuard } from "~/lib/react-query";
-import { SheetsFlatList } from "~/components/Defaults";
+import { SheetsLegendList } from "~/components/Defaults";
 import { Button } from "~/components/Form/Button";
 import { Radio } from "~/components/Form/Selection";
 import { Sheet } from "~/components/Sheet";
@@ -83,10 +83,12 @@ function LanguageSheet(props: { sheetRef: React.RefObject<ActionSheetRef> }) {
       titleKey="feat.language.title"
       contentContainerClassName="pb-0"
     >
-      <SheetsFlatList
+      <SheetsLegendList
         accessibilityRole="radiogroup"
+        estimatedItemSize={54}
         data={LANGUAGES}
         keyExtractor={({ code }) => code}
+        extraData={languageCode}
         renderItem={({ item }) => (
           <Radio
             selected={languageCode === item.code}
@@ -95,7 +97,8 @@ function LanguageSheet(props: { sheetRef: React.RefObject<ActionSheetRef> }) {
             <StyledText>{item.name}</StyledText>
           </Radio>
         )}
-        contentContainerClassName="gap-1 pb-4"
+        columnWrapperStyle={{ rowGap: 4 }}
+        contentContainerClassName="pb-4"
       />
     </Sheet>
   );

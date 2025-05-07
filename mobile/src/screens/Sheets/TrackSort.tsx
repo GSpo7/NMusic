@@ -6,7 +6,7 @@ import {
 } from "~/modules/media/services/SortPreferences";
 
 import { ListItem } from "~/components/Containment/List";
-import { FlatList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { Radio } from "~/components/Form/Selection";
 import { Sheet } from "~/components/Sheet";
 import { TStyledText } from "~/components/Typography/StyledText";
@@ -32,10 +32,12 @@ export function TrackSortSheet(props: {
         switchState={isAsc}
         {...{ largeTitle: true, first: true, last: true }}
       />
-      <FlatList
+      <LegendList
         accessibilityRole="radiogroup"
+        estimatedItemSize={54}
         data={OrderedByOptions}
         keyExtractor={(sortOption) => sortOption}
+        extraData={orderedBy}
         renderItem={({ item: sortOption }) => (
           <Radio
             selected={orderedBy === sortOption}
@@ -44,7 +46,7 @@ export function TrackSortSheet(props: {
             <TStyledText textKey={`feat.modalSort.extra.${sortOption}`} />
           </Radio>
         )}
-        contentContainerClassName="gap-1"
+        columnWrapperStyle={{ rowGap: 4 }}
       />
     </Sheet>
   );

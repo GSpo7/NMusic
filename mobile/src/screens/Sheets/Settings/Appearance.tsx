@@ -13,7 +13,7 @@ import {
 
 import { getFont } from "~/lib/style";
 import { toLowerCase } from "~/utils/string";
-import { FlatList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { Radio } from "~/components/Form/Selection";
 import { Sheet } from "~/components/Sheet";
 import { TStyledText } from "~/components/Typography/StyledText";
@@ -79,10 +79,12 @@ function FontSheet<T extends (typeof AccentFontOptions)[number]>(props: {
       ref={props.sheetRef}
       titleKey={`feat.font.extra.${toLowerCase(props.kind)}`}
     >
-      <FlatList
+      <LegendList
         accessibilityRole="radiogroup"
+        estimatedItemSize={54}
         data={props.fontOptions}
         keyExtractor={(font) => font}
+        extraData={props.selectedFont}
         renderItem={({ item: font }) => (
           <Radio
             selected={props.selectedFont === font}
@@ -96,7 +98,7 @@ function FontSheet<T extends (typeof AccentFontOptions)[number]>(props: {
             </Text>
           </Radio>
         )}
-        contentContainerClassName="gap-1"
+        columnWrapperStyle={{ rowGap: 4 }}
       />
     </Sheet>
   );
@@ -110,10 +112,12 @@ function ThemeSheet(props: { sheetRef: React.RefObject<ActionSheetRef> }) {
 
   return (
     <Sheet ref={props.sheetRef} titleKey="feat.theme.title">
-      <FlatList
+      <LegendList
         accessibilityRole="radiogroup"
+        estimatedItemSize={54}
         data={ThemeOptions}
         keyExtractor={(theme) => theme}
+        extraData={selectedTheme}
         renderItem={({ item: theme }) => (
           <Radio
             selected={selectedTheme === theme}
@@ -125,7 +129,7 @@ function ThemeSheet(props: { sheetRef: React.RefObject<ActionSheetRef> }) {
             <TStyledText textKey={`feat.theme.extra.${theme}`} />
           </Radio>
         )}
-        contentContainerClassName="gap-1"
+        columnWrapperStyle={{ rowGap: 4 }}
       />
     </Sheet>
   );
@@ -140,10 +144,12 @@ function NowPlayingDesignSheet(props: {
   );
   return (
     <Sheet ref={props.sheetRef} titleKey="feat.nowPlayingDesign.title">
-      <FlatList
+      <LegendList
         accessibilityRole="radiogroup"
+        estimatedItemSize={54}
         data={NowPlayingDesignOptions}
         keyExtractor={(design) => design}
+        extraData={nowPlayingDesign}
         renderItem={({ item: design }) => (
           <Radio
             selected={nowPlayingDesign === design}
@@ -152,7 +158,7 @@ function NowPlayingDesignSheet(props: {
             <TStyledText textKey={`feat.nowPlayingDesign.extra.${design}`} />
           </Radio>
         )}
-        contentContainerClassName="gap-1"
+        columnWrapperStyle={{ rowGap: 4 }}
       />
     </Sheet>
   );

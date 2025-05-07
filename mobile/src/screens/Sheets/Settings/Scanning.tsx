@@ -24,9 +24,8 @@ import {
 
 import { Colors } from "~/constants/Styles";
 import { mutateGuard } from "~/lib/react-query";
-import { cn } from "~/lib/style";
 import { Marquee } from "~/components/Containment/Marquee";
-import { SheetsFlashList } from "~/components/Defaults";
+import { SheetsLegendList } from "~/components/Defaults";
 import { IconButton } from "~/components/Form/Button";
 import { NumericInput, TextInput } from "~/components/Form/Input";
 import { ContentPlaceholder } from "~/components/Transition/Placeholder";
@@ -81,13 +80,13 @@ function ScanFilterListSheet({
       </StyledText>
       <FilterForm {...{ listType, listEntries }} />
 
-      <SheetsFlashList
-        estimatedItemSize={58} // 54px Height + 4px Margin Top
+      <SheetsLegendList
+        estimatedItemSize={54}
         data={listEntries}
         keyExtractor={(item) => item}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <Swipeable
-            containerClassName={cn("px-4", { "mt-1": index > 0 })}
+            containerClassName="px-4"
             renderRightActions={() => (
               <IconButton
                 accessibilityLabel={t("template.entryRemove", { name: item })}
@@ -110,6 +109,7 @@ function ScanFilterListSheet({
         ListEmptyComponent={
           <ContentPlaceholder errMsgKey="err.msg.noFilters" />
         }
+        columnWrapperStyle={{ rowGap: 4 }}
         contentContainerClassName="pb-4"
       />
     </Sheet>

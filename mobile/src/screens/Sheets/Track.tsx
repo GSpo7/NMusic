@@ -36,7 +36,7 @@ import {
   formatSeconds,
 } from "~/utils/number";
 import { Marquee } from "~/components/Containment/Marquee";
-import { SheetsFlashList } from "~/components/Defaults";
+import { SheetsLegendList } from "~/components/Defaults";
 import { Divider } from "~/components/Divider";
 import { IconButton } from "~/components/Form/Button";
 import { Checkbox } from "~/components/Form/Selection";
@@ -333,11 +333,11 @@ function TrackToPlaylistSheet({
       onBeforeClose={() => SheetManager.hide("TrackSheet")}
       snapTop
     >
-      <SheetsFlashList
-        estimatedItemSize={58} // 54px Height + 4px Margin Top
+      <SheetsLegendList
+        estimatedItemSize={54}
         data={data}
         keyExtractor={({ name }) => name}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           const selected = inList?.includes(item.name) ?? false;
           return (
             <Checkbox
@@ -349,7 +349,6 @@ function TrackToPlaylistSheet({
                   item.name,
                 )
               }
-              wrapperClassName={index > 0 ? "mt-1" : undefined}
             >
               <Marquee color={selected ? surface : canvasAlt}>
                 <StyledText>{item.name}</StyledText>
@@ -360,6 +359,7 @@ function TrackToPlaylistSheet({
         ListEmptyComponent={
           <ContentPlaceholder errMsgKey="err.msg.noPlaylists" />
         }
+        columnWrapperStyle={{ rowGap: 4 }}
         contentContainerClassName="pb-4"
       />
     </Sheet>

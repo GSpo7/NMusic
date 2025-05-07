@@ -1,5 +1,5 @@
-import type { ListRenderItemInfo } from "@shopify/flash-list";
-import { useState } from "react";
+import type { LegendListRenderItemProps } from "@legendapp/list";
+import { useRecyclingEffect } from "@legendapp/list";
 import { useTranslation } from "react-i18next";
 import type { ActionSheetRef } from "react-native-actions-sheet";
 import TrackPlayer from "react-native-track-player";
@@ -16,7 +16,7 @@ import { useUpcomingStore } from "./helpers/UpcomingStore";
 
 import { Colors } from "~/constants/Styles";
 import { cn } from "~/lib/style";
-import { FlashList, SheetsFlashList } from "~/components/Defaults";
+import { SheetsLegendList } from "~/components/Defaults";
 import { IconButton } from "~/components/Form/Button";
 import { NSlider } from "~/components/Form/Slider";
 import { Sheet } from "~/components/Sheet";
@@ -130,8 +130,8 @@ function TrackUpcomingSheet(props: {
       onOpen={populateCurrentTrackList}
       contentContainerClassName="px-0"
     >
-      <SheetsFlashList
-        estimatedItemSize={52} // 48px Height + 4px Margin Top
+      <SheetsLegendList
+        estimatedItemSize={48}
         data={data}
         keyExtractor={(item, index) => (item ? item.id : `${index}`)}
         renderItem={({ item, index }) =>
@@ -140,10 +140,7 @@ function TrackUpcomingSheet(props: {
               title={item.name}
               description={item.artistName ?? "—"}
               imageSource={getTrackCover(item)}
-              className={cn("px-4", {
-                "opacity-25": index >= disableIndex,
-                "mt-1": index > 0,
-              })}
+              className={cn("px-4", { "opacity-25": index >= disableIndex })}
             />
           ) : null
         }
@@ -151,6 +148,7 @@ function TrackUpcomingSheet(props: {
         ListEmptyComponent={
           <ContentPlaceholder isPending={trackList.length === 0} />
         }
+        columnWrapperStyle={{ rowGap: 4 }}
         contentContainerClassName="pb-4"
       />
     </Sheet>
@@ -165,8 +163,8 @@ function QueueList() {
   const queueList = useUpcomingStore((state) => state.queuedTrackList);
   if (queueList.filter((t) => t !== undefined).length === 0) return null;
   return (
-    <FlashList
-      estimatedItemSize={52} // 48px Height + 4px Margin Bottom
+    <SheetsLegendList
+      estimatedItemSize={52} // +4px Margin Bottom
       data={queueList}
       keyExtractor={(item, index) => `${item?.id}_${index}`}
       renderItem={(args) => <RenderQueueItem {...args} />}
@@ -174,15 +172,16 @@ function QueueList() {
   );
 }
 
-function RenderQueueItem({ item, index }: ListRenderItemInfo<PartialTrack>) {
+function RenderQueueItem({
+  item,
+  index,
+}: LegendListRenderItemProps<PartialTrack>) {
   const { t } = useTranslation();
   const swipeableRef = useSwipeableRef();
-  const [lastItemId, setLastItemId] = useState(item?.id);
 
-  if (item?.id !== lastItemId) {
-    setLastItemId(item?.id);
-    if (swipeableRef.current) swipeableRef.current.resetIfNeeded();
-  }
+  useRecyclingEffect(() => {
+    swipeableRef.current?.resetIfNeeded();
+  });
 
   if (!item) return null;
   return (
