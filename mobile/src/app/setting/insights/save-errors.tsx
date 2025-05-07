@@ -1,7 +1,7 @@
 import { useSaveErrors } from "~/queries/setting";
 
 import { useListPresets } from "~/components/Containment/List";
-import { FlashList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { ContentPlaceholder } from "~/components/Transition/Placeholder";
 
 /** Screen for `/setting/insights/save-errors` route. */
@@ -16,10 +16,9 @@ export default function SaveErrorsScreen() {
   });
 
   return (
-    <FlashList
+    <LegendList
       keyExtractor={({ id }) => id}
       ListEmptyComponent={<ContentPlaceholder errMsgKey="err.msg.noErrors" />}
-      className="mx-4"
       contentContainerClassName="p-4"
       {...presets}
     />

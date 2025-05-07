@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import LicensesList from "~/resources/licenses.json";
 
 import { useListPresets } from "~/components/Containment/List";
-import { FlashList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 
 /** Screen for `/setting/third-party` route. */
 export default function ThirdPartyScreen() {
@@ -19,9 +19,8 @@ export default function ThirdPartyScreen() {
     },
   });
   return (
-    <FlashList
+    <LegendList
       keyExtractor={([id]) => id}
-      className="mx-4"
       contentContainerClassName="p-4"
       {...presets}
     />
