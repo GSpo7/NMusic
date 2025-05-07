@@ -16,6 +16,7 @@ import { FlatList as RNASFlatList } from "react-native-actions-sheet";
 import { FlashList as RNASFlashList } from "react-native-actions-sheet/dist/src/views/FlashList";
 import type { FlashDragListProps } from "react-native-draglist/dist/FlashList";
 import RNFlashDragList from "react-native-draglist/dist/FlashList";
+import { ScrollView as RNGHScrollView } from "react-native-gesture-handler";
 
 /** Presets for scrollview-like components. */
 export const ScrollablePresets = {
@@ -110,6 +111,21 @@ export const AnimatedLegendList = forwardRef(
 
 export function useLegendListRef() {
   return useRef<LegendListRef>(null);
+}
+
+/** Legend List for `react-native-actions-sheet`. */
+export const SheetsLegendList: LegendListSignature = (props) => {
+  return (
+    <LegendList
+      {...props}
+      renderScrollComponent={CustomScrollComponent}
+      nestedScrollEnabled
+    />
+  );
+};
+
+function CustomScrollComponent(props: ScrollViewProps) {
+  return <RNGHScrollView {...props} />;
 }
 //#endregion
 

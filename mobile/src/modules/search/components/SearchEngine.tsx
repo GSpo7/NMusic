@@ -15,8 +15,7 @@ import { Close } from "~/icons/Close";
 import { Search } from "~/icons/Search";
 import { useTheme } from "~/hooks/useTheme";
 
-import { cn } from "~/lib/style";
-import { FlashList, SheetsFlashList } from "~/components/Defaults";
+import { LegendList, SheetsLegendList } from "~/components/Defaults";
 import { IconButton } from "~/components/Form/Button";
 import { TextInput, useInputRef } from "~/components/Form/Input";
 import { ContentPlaceholder } from "~/components/Transition/Placeholder";
@@ -91,13 +90,16 @@ function SearchResultsList<TScope extends SearchCategories>(
   );
 
   const ListComponent = useMemo(() => {
-    return props.withGesture ? SheetsFlashList : FlashList;
+    return props.withGesture ? SheetsLegendList : LegendList;
   }, [props.withGesture]);
 
   return (
     <View className="relative shrink grow">
       <ListComponent
-        estimatedItemSize={56} // 48px Height + 8px Margin Top
+        getEstimatedItemSize={(index, item) => {
+          if (typeof item === "string") return index === 0 ? 14 : 22;
+          else return 48;
+        }}
         data={data}
         // Note: We use `index` instead of the `id` or `name` field on the
         // `entry` due to there being potentially shared values (ie: between
@@ -109,16 +111,16 @@ function SearchResultsList<TScope extends SearchCategories>(
           typeof item === "string" ? (
             <TEm
               textKey={`term.${item}`}
-              className={index > 0 ? "mt-4" : undefined}
+              className={index > 0 ? "mt-2" : undefined}
             />
           ) : (
             <SearchResult
               as="ripple"
               /* @ts-expect-error - `type` should be limited to our scope. */
               onPress={() => props.callbacks[item.type](item.entry)}
-              wrapperClassName={cn("mt-2", {
-                "rounded-full": item.type === "artist",
-              })}
+              wrapperClassName={
+                item.type === "artist" ? "rounded-full" : undefined
+              }
               className="pr-4"
               {...item}
             />
@@ -126,9 +128,13 @@ function SearchResultsList<TScope extends SearchCategories>(
         }
         ListEmptyComponent={
           props.query.length > 0 ? (
-            <ContentPlaceholder errMsgKey="err.msg.noResults" />
+            <ContentPlaceholder
+              errMsgKey="err.msg.noResults"
+              className="pt-10"
+            />
           ) : undefined
         }
+        columnWrapperStyle={{ rowGap: 8 }}
         contentContainerClassName="pt-6 pb-4"
       />
 
