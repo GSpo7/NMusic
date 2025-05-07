@@ -2,7 +2,7 @@ import { useFavoriteTracksForScreen } from "~/queries/favorite";
 import { useBottomActionsContext } from "~/hooks/useBottomActionsContext";
 import { CurrentListLayout } from "~/layouts/CurrentList";
 
-import { FlashList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { PagePlaceholder } from "~/components/Transition/Placeholder";
 import { ReservedPlaylists } from "~/modules/media/constants";
 import { useTrackListPreset } from "~/modules/media/components/Track";
@@ -28,9 +28,8 @@ export default function FavoriteTracksScreen() {
       imageSource={data.imageSource}
       mediaSource={trackSource}
     >
-      <FlashList
-        className="mx-4"
-        contentContainerClassName="pt-4"
+      <LegendList
+        contentContainerClassName="px-4 pt-4"
         contentContainerStyle={{ paddingBottom: bottomInset.onlyPlayer + 16 }}
         {...presets}
       />

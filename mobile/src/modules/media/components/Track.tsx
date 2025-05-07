@@ -1,4 +1,4 @@
-import type { FlashListProps } from "@shopify/flash-list";
+import type { LegendListProps } from "@legendapp/list";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -68,15 +68,11 @@ export function useTrackListPreset(props: {
 }) {
   return useMemo(
     () => ({
-      estimatedItemSize: 56, // 48px Height + 8px Margin Top
+      estimatedItemSize: 56, // +8px to prevent gap not being initially applied when data changes.
       data: props.data,
       keyExtractor: ({ id }) => id,
-      renderItem: ({ item, index }) => (
-        <Track
-          {...item}
-          trackSource={props.trackSource}
-          className={index > 0 ? "mt-2" : undefined}
-        />
+      renderItem: ({ item }) => (
+        <Track {...item} trackSource={props.trackSource} />
       ),
       ListEmptyComponent: (
         <ContentPlaceholder
@@ -84,8 +80,9 @@ export function useTrackListPreset(props: {
           errMsgKey="err.msg.noTracks"
         />
       ),
+      columnWrapperStyle: { rowGap: 8 },
     }),
     [props],
-  ) satisfies FlashListProps<Track.Content>;
+  ) satisfies LegendListProps<Track.Content>;
 }
 //#endregion
