@@ -9,7 +9,7 @@ import { useBottomActionsContext } from "~/hooks/useBottomActionsContext";
 import { CurrentListLayout } from "~/layouts/CurrentList";
 
 import { mutateGuard } from "~/lib/react-query";
-import { FlashList } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { IconButton } from "~/components/Form/Button";
 import { PagePlaceholder } from "~/components/Transition/Placeholder";
 import { Em, StyledText } from "~/components/Typography/StyledText";
@@ -71,15 +71,18 @@ export default function CurrentAlbumScreen() {
         imageSource={data.imageSource}
         mediaSource={trackSource}
       >
-        <FlashList
-          estimatedItemSize={56} // 48px Height + 8px Margin Top
+        <LegendList
+          getEstimatedItemSize={(index, item) => {
+            if (typeof item === "number") return index === 0 ? 14 : 22;
+            else return 48;
+          }}
           data={formattedData}
           keyExtractor={(item) =>
             typeof item === "number" ? `${item}` : item.id
           }
           renderItem={({ item, index }) =>
             typeof item === "number" ? (
-              <Em dim className={index > 0 ? "mt-4" : undefined}>
+              <Em dim className={index > 0 ? "mt-2" : undefined}>
                 {t("term.disc", { count: item })}
               </Em>
             ) : (
@@ -87,12 +90,11 @@ export default function CurrentAlbumScreen() {
                 {...item}
                 trackSource={trackSource}
                 LeftElement={<TrackNumber track={item.track} />}
-                className={index > 0 ? "mt-2" : undefined}
               />
             )
           }
-          className="mx-4"
-          contentContainerClassName="pt-4"
+          columnWrapperStyle={{ rowGap: 8 }}
+          contentContainerClassName="px-4 pt-4"
           contentContainerStyle={{ paddingBottom: bottomInset.onlyPlayer + 16 }}
         />
       </CurrentListLayout>
