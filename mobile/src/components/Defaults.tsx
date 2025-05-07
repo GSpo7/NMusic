@@ -7,13 +7,8 @@ import { cssInterop } from "nativewind";
 import type { ForwardedRef } from "react";
 import { forwardRef, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { FlatListProps, ScrollViewProps } from "react-native";
-import {
-  FlatList as RNFlatList,
-  ScrollView as RNScrollView,
-} from "react-native";
-import { FlatList as RNASFlatList } from "react-native-actions-sheet";
-import { FlashList as RNASFlashList } from "react-native-actions-sheet/dist/src/views/FlashList";
+import type { ScrollViewProps } from "react-native";
+import { ScrollView as RNScrollView } from "react-native";
 import type { FlashDragListProps } from "react-native-draglist/dist/FlashList";
 import RNFlashDragList from "react-native-draglist/dist/FlashList";
 import { ScrollView as RNGHScrollView } from "react-native-gesture-handler";
@@ -25,11 +20,7 @@ export const ScrollablePresets = {
   showsVerticalScrollIndicator: false,
 } satisfies ScrollViewProps;
 
-//#region Native Components
-export function FlatList<TData>(props: FlatListProps<TData>) {
-  return <RNFlatList {...ScrollablePresets} {...props} />;
-}
-
+//#region ScrolL View
 export function ScrollView(props: ScrollViewProps) {
   return <RNScrollView {...ScrollablePresets} {...props} />;
 }
@@ -39,16 +30,6 @@ export function ScrollView(props: ScrollViewProps) {
 /** `<FlashList />` with some defaults applied. */
 export function FlashList<TData>(props: FlashListProps<TData>) {
   return <SFlashList {...ScrollablePresets} {...props} />;
-}
-
-/** `<FlatList />` from `react-native-actions-sheet` with some defaults applied. */
-export function SheetsFlatList<TData>(props: FlatListProps<TData>) {
-  return <RNASFlatList {...ScrollablePresets} {...props} />;
-}
-
-/** `<FlashList />` from `react-native-actions-sheet` with some defaults applied. */
-export function SheetsFlashList<TData>(props: FlashListProps<TData>) {
-  return <RNASFlashList {...ScrollablePresets} {...props} />;
 }
 //#endregion
 
