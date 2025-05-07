@@ -1,6 +1,5 @@
-import { FlashList as SFlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import type { ScrollViewProps } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import {
@@ -12,9 +11,8 @@ import { useGetColumn } from "~/hooks/useGetColumn";
 import { useRecentListStore } from "~/modules/media/services/RecentList";
 import { StandardScrollLayout } from "~/layouts/StandardScroll";
 
-import { cn } from "~/lib/style";
 import { abbreviateNum } from "~/utils/number";
-import { FlashList, ScrollablePresets } from "~/components/Defaults";
+import { LegendList } from "~/components/Defaults";
 import { Button } from "~/components/Form/Button";
 import { AccentText } from "~/components/Typography/AccentText";
 import { TEm, TStyledText } from "~/components/Typography/StyledText";
@@ -48,57 +46,37 @@ function RecentlyPlayed() {
   const recentlyPlayedData = useRecentListStore((state) => state.recentList);
   const shouldShow = useUserPreferencesStore((state) => state.showRecent);
 
-  const [initNoData, setInitNoData] = useState(false);
-  const [itemHeight, setItemHeight] = useState(0);
-  const listRef = useRef<SFlashList<MediaCard.Content>>(null);
-
-  useEffect(() => {
-    // Fix incorrect `<FlashList />` height due to it only being calculated
-    // on initial render.
-    //  - See: https://github.com/Shopify/flash-list/issues/881
-    if (initNoData && itemHeight !== 0) {
-      // @ts-ignore: Bypass private property access warning
-      listRef.current?.rlvRef?._onSizeChanged({
-        // @ts-ignore: Bypass private property access warning
-        width: listRef.current.rlvRef._layout.width,
-        height: itemHeight,
-      });
-      setInitNoData(false);
-    }
-  }, [initNoData, itemHeight]);
-
   if (!shouldShow) return null;
-
   return (
     <>
       <TEm textKey="feat.playedRecent.title" className="-mb-4" />
-      <SFlashList
-        ref={listRef}
-        estimatedItemSize={width + 12} // Column width + gap from padding left
+      <LegendList
+        estimatedItemSize={width}
         horizontal
         data={recentlyPlayedData}
         keyExtractor={({ href }) => href}
-        renderItem={({ item, index }) => (
-          <MediaCard
-            onLayout={(e) => setItemHeight(e.nativeEvent.layout.height)}
-            {...{ ...item, size: width }}
-            className={index > 0 ? "ml-3" : undefined}
-          />
-        )}
+        renderItem={({ item }) => <MediaCard {...item} size={width} />}
         ListEmptyComponent={
           <TStyledText
-            onLayout={() => setInitNoData(true)}
             textKey="feat.playedRecent.extra.empty"
             className="my-4"
           />
         }
-        renderScrollComponent={ScrollView}
-        {...ScrollablePresets}
+        renderScrollComponent={CustomScrollComponent}
+        columnWrapperStyle={{ columnGap: 12 }}
+        // To avoid warning for the list having a height of 0.
+        style={
+          recentlyPlayedData.length > 0 ? { height: width + 39 } : undefined
+        }
         className="-mx-4"
         contentContainerClassName="px-4"
       />
     </>
   );
+}
+
+function CustomScrollComponent(props: ScrollViewProps) {
+  return <ScrollView {...props} />;
 }
 //#endregion
 
@@ -111,14 +89,14 @@ function Favorites() {
     RenderFirst: FavoriteTracks,
   });
 
-  return <FlashList {...presets} />;
+  return <LegendList {...presets} />;
 }
 
 /**
  * Displays the number of favorited tracks and opens up the playlist of
  * favorited tracks.
  */
-function FavoriteTracks(props: { size: number; className: string }) {
+function FavoriteTracks(props: { size: number }) {
   const { isPending, error, data } = useFavoriteTracksCount();
 
   const trackCount = isPending || error ? "" : abbreviateNum(data);
@@ -128,8 +106,8 @@ function FavoriteTracks(props: { size: number; className: string }) {
       onPress={() =>
         router.navigate(`/playlist/${ReservedPlaylists.favorites}`)
       }
-      style={{ width: props.size, height: props.size }}
-      className={cn("gap-0 rounded-lg bg-red", props.className)}
+      style={{ width: props.size, height: props.size, marginBottom: 39 }}
+      className="gap-0 rounded-lg bg-red"
     >
       <AccentText className="text-[3rem] text-neutral100">
         {trackCount}
