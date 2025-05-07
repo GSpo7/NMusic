@@ -20,7 +20,7 @@ export const ScrollablePresets = {
   showsVerticalScrollIndicator: false,
 } satisfies ScrollViewProps;
 
-//#region ScrolL View
+//#region Scroll View
 export function ScrollView(props: ScrollViewProps) {
   return <RNScrollView {...ScrollablePresets} {...props} />;
 }
